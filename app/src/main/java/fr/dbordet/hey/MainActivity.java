@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TOAST_TEXT = "Test ads are being shown. "
             + "To show live ads, replace the ad unit ID in res/values/strings.xml with your own ad unit ID.";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
