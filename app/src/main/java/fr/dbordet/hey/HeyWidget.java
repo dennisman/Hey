@@ -19,14 +19,13 @@ public class HeyWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.hey_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+        views.setImageViewResource(R.id.appwidget_btn, R.drawable.hey);
         Intent intent = new Intent(context, HeyWidget.class);
         intent.setAction(HEY_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-        views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent);
+        views.setOnClickPendingIntent(R.id.appwidget_btn, pendingIntent);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
