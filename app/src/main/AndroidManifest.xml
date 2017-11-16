@@ -13,12 +13,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:taskAffinity="">
+
+            <!-- ajout de taskaffinity : the trampoline activity should include the attribute assignment android:taskAffinity="". -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <receiver android:name=".HeyWidget">
@@ -30,6 +38,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/hey_widget_info" />
         </receiver>
+
+        <service
+            android:name=".MediaIntentService"
+            android:exported="false" />
         <!-- This meta-data tag is required to use Google Play Services. -->
         <meta-data
             android:name="com.google.android.gms.version"
@@ -43,7 +55,10 @@
         <service
             android:name=".MediaService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+        <service
+            android:name=".MediaIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

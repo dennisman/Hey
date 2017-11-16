@@ -1,5 +1,6 @@
 package fr.dbordet.hey;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import android.view.View;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+
+import static fr.dbordet.hey.HeyWidget.HEY_SERVICE;
 
 public class MainActivity extends AppCompatActivity {
     /**
@@ -27,8 +30,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        Intent createIntent = getIntent();
 
+        if (createIntent != null && createIntent.getData() != null) { // appShortcut par exemple
+            final Intent serviceIntent = new Intent(this, MediaService.class); // lancer plutot l'intent service avec le nom du son en param
+            serviceIntent.setAction(HEY_SERVICE);
+            serviceIntent.setData(createIntent.getData());
+            this.startService(serviceIntent);
+            finish();
+        }
+
+        setContentView(R.layout.activity_main);
         // initialize the Mobile Ads SDK
         MobileAds.initialize(this, MY_APP_ADS_ID);
         // Load an ad into the AdMob banner view.

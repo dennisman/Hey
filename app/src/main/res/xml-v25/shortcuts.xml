@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@android:drawable/ic_media_play"
+        android:shortcutDisabledMessage="@string/shortcut_label_disable"
+        android:shortcutId="compose"
+        android:shortcutLongLabel="@string/shortcut_label_long"
+        android:shortcutShortLabel="@string/shortcut_label_short">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="raw/hey.wav"
+            android:targetClass="fr.dbordet.hey.MainActivity"
+            android:targetPackage="fr.dbordet.hey" />
+        <!-- If your shortcut is associated with multiple intents, include them
+             here. The last intent in the list determines what the user sees when
+             they launch this shortcut. -->
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <!-- Specify more shortcuts here. -->
+</shortcuts>
