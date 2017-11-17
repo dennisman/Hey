@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.widget.RemoteViews;
 
 /**
@@ -14,6 +15,7 @@ public class HeyWidget extends AppWidgetProvider {
 
     public static final String HEY_ACTION = "heySoundAction";
     public static final String HEY_SERVICE = "heySoundService";
+    public static final String DEFAULT_SOUND_NAME = "hey";
 
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
@@ -58,6 +60,7 @@ public class HeyWidget extends AppWidgetProvider {
         if (intent != null && HEY_ACTION.equals(intent.getAction())) {
             final Intent serviceIntent = new Intent(context, MediaService.class);
             serviceIntent.setAction(HEY_SERVICE);
+            serviceIntent.setData(Uri.parse(DEFAULT_SOUND_NAME));
             context.startService(serviceIntent);
         }
     }

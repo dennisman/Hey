@@ -18,7 +18,6 @@ public class MediaService extends Service {
     public void onCreate() {
         super.onCreate();
         this.mediaPlayer = MediaPlayer.create(this, R.raw.hey);
-        this.mediaPlayer.setOnPreparedListener(new CustomOnPreparedListener(this));
 
     }
 
@@ -27,23 +26,14 @@ public class MediaService extends Service {
         if ((intent == null || intent.getAction() == null || !HeyWidget.HEY_SERVICE.equals(intent.getAction()))) {
             return Service.START_STICKY_COMPATIBILITY;
         }
+        if (intent.getDataString() != null) {
+            mediaPlayer.stop();
+            this.mediaPlayer = MediaPlayer.create(this, getApplicationContext().getResources().getIdentifier(intent.getDataString(), "raw", getPackageName()));
+        }
         if (this.mediaPlayer.isPlaying()) {
             this.mediaPlayer.seekTo(0);
         }
         this.mediaPlayer.start();
         return Service.START_STICKY_COMPATIBILITY;
-    }
-
-    private class CustomOnPreparedListener implements MediaPlayer.OnPreparedListener {
-        final MediaService mediaService;
-
-        public CustomOnPreparedListener(MediaService mediaService) {
-            this.mediaService = mediaService;
-        }
-
-        @Override
-        public void onPrepared(MediaPlayer mediaPlayer) {
-            mediaPlayer.seekTo(0);
-        }
     }
 }

@@ -39,9 +39,6 @@
                 android:resource="@xml/hey_widget_info" />
         </receiver>
 
-        <service
-            android:name=".MediaIntentService"
-            android:exported="false" />
         <!-- This meta-data tag is required to use Google Play Services. -->
         <meta-data
             android:name="com.google.android.gms.version"
@@ -56,9 +53,6 @@
             android:name=".MediaService"
             android:enabled="true"
             android:exported="true" />
-        <service
-            android:name=".MediaIntentService"
-            android:exported="false"></service>
     </application>
 
 </manifest>

@@ -9,7 +9,7 @@
         android:shortcutShortLabel="@string/shortcut_label_short">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="raw/hey.wav"
+            android:data="hey2"
             android:targetClass="fr.dbordet.hey.MainActivity"
             android:targetPackage="fr.dbordet.hey" />
         <!-- If your shortcut is associated with multiple intents, include them

@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         Intent createIntent = getIntent();
 
         if (createIntent != null && createIntent.getData() != null) { // appShortcut par exemple
-            final Intent serviceIntent = new Intent(this, MediaService.class); // lancer plutot l'intent service avec le nom du son en param
+            final Intent serviceIntent = new Intent(this, MediaService.class);
             serviceIntent.setAction(HEY_SERVICE);
             serviceIntent.setData(createIntent.getData());
             this.startService(serviceIntent);
