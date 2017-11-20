@@ -7,7 +7,7 @@
     <string name="action_settings">Settings</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="shortcut_label_short">Ah!</string>
+    <string name="shortcut_label_short">Hey girl !</string>
     <string name="shortcut_label_long">@string/shortcut_label_short</string>
     <string name="shortcut_label_disable">pas Ah!</string>
     <!-- -
