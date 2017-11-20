@@ -6,6 +6,8 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 /**
@@ -44,7 +46,12 @@ public class HeyWidget extends AppWidgetProvider {
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
         super.onEnabled(context);
-        context.startService(new Intent(context, MediaService.class));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d(getClass().getCanonicalName(), "foregroundService");
+            context.startForegroundService(new Intent(context, MediaService.class));
+        } else {
+            context.startService(new Intent(context, MediaService.class));
+        }
     }
 
     @Override
@@ -61,7 +68,11 @@ public class HeyWidget extends AppWidgetProvider {
             final Intent serviceIntent = new Intent(context, MediaService.class);
             serviceIntent.setAction(HEY_SERVICE);
             serviceIntent.setData(Uri.parse(DEFAULT_SOUND_NAME));
-            context.startService(serviceIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(serviceIntent);
+            } else {
+                context.startService(serviceIntent);
+            }
         }
     }
 }
