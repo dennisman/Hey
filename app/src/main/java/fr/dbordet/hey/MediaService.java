@@ -28,6 +28,7 @@ public class MediaService extends Service {
         }
         if (intent.getDataString() != null) {
             mediaPlayer.stop();
+            mediaPlayer.release();
             this.mediaPlayer = MediaPlayer.create(this, getApplicationContext().getResources().getIdentifier(intent.getDataString(), "raw", getPackageName()));
         }
         if (this.mediaPlayer.isPlaying()) {
