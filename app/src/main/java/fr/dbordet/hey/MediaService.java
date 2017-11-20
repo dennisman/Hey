@@ -7,6 +7,7 @@ import android.os.IBinder;
 
 public class MediaService extends Service {
     private MediaPlayer mediaPlayer;
+    private String audioFile;
 
 
     @Override
@@ -26,10 +27,13 @@ public class MediaService extends Service {
         if ((intent == null || intent.getAction() == null || !HeyWidget.HEY_SERVICE.equals(intent.getAction()))) {
             return Service.START_STICKY_COMPATIBILITY;
         }
-        if (intent.getDataString() != null) {
+        final String localAudioFile = intent.getDataString();
+        if (localAudioFile != null && !localAudioFile.equals(this.audioFile)) {
+            this.audioFile = localAudioFile;
             mediaPlayer.stop();
+            mediaPlayer.reset();
             mediaPlayer.release();
-            this.mediaPlayer = MediaPlayer.create(this, getApplicationContext().getResources().getIdentifier(intent.getDataString(), "raw", getPackageName()));
+            this.mediaPlayer = MediaPlayer.create(this, getApplicationContext().getResources().getIdentifier(localAudioFile, "raw", getPackageName()));
         }
         if (this.mediaPlayer.isPlaying()) {
             this.mediaPlayer.seekTo(0);
