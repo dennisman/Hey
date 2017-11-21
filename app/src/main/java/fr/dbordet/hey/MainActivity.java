@@ -9,6 +9,7 @@ import android.view.View;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static fr.dbordet.hey.HeyWidget.HEY_SERVICE;
 
@@ -20,16 +21,19 @@ public class MainActivity extends AppCompatActivity {
      * "Testing with real ads (even if you never tap on them) is against AdMob policy and can cause your account to be suspended".
      * https://developers.google.com/admob/android/banner?hl=fr
      */
-    private static final String MY_OP3T_TESTDEVICE_ID = "44572ECFAADF7A1CC5E67FB1FB0CA747";
+    private static final String MY_OP3T_TESTDEVICE_ID = "5E82255F8F587F5AF93BC5DF8A99810E";
 
     /**
      * Identifiant adMob de l'application, différent de l'id adMob de la adView
      */
     private static final String MY_APP_ADS_ID = "ca-app-pub-4011387854346003~9386990030";
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Intent createIntent = getIntent();
 
         if (createIntent != null && createIntent.getData() != null) { // appShortcut par exemple

@@ -25,7 +25,7 @@ public class HeyWidget extends AppWidgetProvider {
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.hey_widget);
-        views.setImageViewResource(R.id.appwidget_btn, R.drawable.hey);
+        views.setImageViewResource(R.id.appwidget_btn, R.drawable.ic_widget);
         Intent intent = new Intent(context, HeyWidget.class);
         intent.setAction(HEY_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);

@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/hey" />
+        android:background="@mipmap/ic_launcher" />
 
     <!-- view for AdMob Banner Ad -->
     <com.google.android.gms.ads.AdView
