@@ -12,7 +12,6 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static fr.dbordet.hey.HeyWidget.HEY_SERVICE;
 
@@ -31,10 +30,15 @@ public class MainActivity extends AppCompatActivity {
      */
     private static final String MY_APP_ADS_ID = "ca-app-pub-4011387854346003~9386990030";
 
-    private FirebaseAnalytics mFirebaseAnalytics;
-
+    /**
+     * Vue de la pub
+     */
     private AdView adView;
 
+    /**
+     * Listener de la pub. cache la pub au retour sur l'appli.
+     * Enregistre dans les sharedPref que l'utilisateur a deja cliqué à l'ouverture de la pub
+     */
     private final AdListener adListener = new AdListener() {
 
         @Override
@@ -57,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Intent createIntent = getIntent();
         if (createIntent != null && createIntent.getData() != null) { // appShortcut par exemple
             final Intent serviceIntent = new Intent(this, MediaService.class);
