@@ -15,4 +15,6 @@
         For more information, see https://support.google.com/admob/answer/3052638
     <!- -->
     <string name="banner_ad_unit_id">ca-app-pub-4011387854346003/4973226012</string>
+
+    <string name="is_user_ad_clicker">is_user_ad_clicker</string>
 </resources>
