@@ -3,10 +3,13 @@ package fr.dbordet.hey;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -90,6 +93,14 @@ public class MainActivity extends AppCompatActivity {
         final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.hey);
         this.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                AudioManager audioManager = getAudioManager();
+                if (audioManager != null && audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) {
+                    Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.youShouldActivateSound), Toast.LENGTH_LONG);
+                    //audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
+                    toast.show();
+                }
+
+
                 if (mediaPlayer.isPlaying()) {
                     mediaPlayer.seekTo(0);
                 }
@@ -98,4 +109,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public AudioManager getAudioManager() {
+        AudioManager audioManager;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            audioManager = getApplicationContext().getSystemService(AudioManager.class);
+        } else {
+            audioManager = (AudioManager) getApplicationContext().getSystemService(AUDIO_SERVICE);
+        }
+        return audioManager;
+    }
 }
