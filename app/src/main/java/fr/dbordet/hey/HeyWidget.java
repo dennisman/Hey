@@ -25,10 +25,10 @@ public class HeyWidget extends AppWidgetProvider {
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.hey_widget);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             views.setImageViewResource(R.id.appwidget_btn, R.drawable.ic_widget);
         } else {
-            views.setImageViewResource(R.id.appwidget_btn, R.mipmap.ic_launcher);
+            views.setImageViewResource(R.id.appwidget_btn, R.mipmap.ic_launcher_red);
         }
         Intent intent = new Intent(context, HeyWidget.class);
         intent.setAction(HEY_ACTION);

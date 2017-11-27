@@ -15,6 +15,7 @@ import com.google.android.gms.ads.MobileAds;
 
 import static fr.dbordet.hey.HeyWidget.HEY_SERVICE;
 
+//TODO si pas de son, toast puis popup puis banner puis notif ?
 public class MainActivity extends AppCompatActivity {
     /**
      * Identifiant de ton téléphone.
