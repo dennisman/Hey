@@ -1,6 +1,7 @@
 package fr.dbordet.hey;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
@@ -8,6 +9,7 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -19,7 +21,6 @@ import com.google.android.gms.ads.MobileAds;
 
 import static fr.dbordet.hey.HeyWidget.HEY_SERVICE;
 
-//TODO si pas de son, toast puis popup puis banner puis notif ?
 public class MainActivity extends AppCompatActivity {
     /**
      * Identifiant de ton téléphone.
@@ -39,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
      * Toast son off
      */
     private Toast toast;
+
+    /**
+     * SnackBar son off + action sound max
+     */
+    private Snackbar snackbar;
 
     /**
      * Vue de la pub
@@ -67,9 +73,19 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     /**
+     * builder de la popUp d'aler son off
+     */
+    private AlertDialog.Builder alertDialogBuilder;
+    /**
      * Gere le son
      */
     private AudioManager audioManager;
+    private final View.OnClickListener soundHalfMaxListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            upSound();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        initAudioManager();
-        initToast();
+        init();
 
         // initialize the Mobile Ads SDK
         MobileAds.initialize(this, MY_APP_ADS_ID);
@@ -109,18 +124,48 @@ public class MainActivity extends AppCompatActivity {
         this.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (audioManager != null && audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) {
-                    //audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
-                    Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.youShouldActivateSound,
-                            Snackbar.LENGTH_SHORT)
-                            .show();
+//                    snackbar.show();
 //                    toast.show();
+                    alertDialogBuilder.create().show();
+                } else {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.seekTo(0);
+                    }
+                    mediaPlayer.start();
                 }
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.seekTo(0);
-                }
-                mediaPlayer.start();
             }
         });
+    }
+
+    /**
+     * initialisation des différents composants
+     */
+    private void init() {
+        initAudioManager();
+        initToast();
+        initSnackbar();
+        initAlertDialogBuilder();
+    }
+
+    private void initAlertDialogBuilder() {
+        //TODO create custom dialog with seekbar for volume
+        this.alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage(R.string.youShouldActivateSound)
+                .setTitle(R.string.app_name)
+                .setPositiveButton(R.string.upSound, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        upSound();
+                    }
+                })
+                .setNegativeButton(R.string.back, null);
+    }
+
+    private void initSnackbar() {
+        snackbar = Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.youShouldActivateSound,
+                Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.upSound, soundHalfMaxListener);
+
     }
 
     /**
@@ -139,5 +184,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             audioManager = (AudioManager) getApplicationContext().getSystemService(AUDIO_SERVICE);
         }
+    }
+
+    private void upSound() {
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 2, 0);
     }
 }
