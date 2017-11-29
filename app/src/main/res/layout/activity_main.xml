@@ -5,21 +5,36 @@
     android:layout_height="match_parent"
     tools:context="fr.dbordet.hey.MainActivity">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="@dimen/heyButtonSize"
-        android:layout_height="@dimen/heyButtonSize"
-        android:layout_centerInParent="true"
-        android:background="@mipmap/ic_launcher" />
-
+    <View
+        android:id="@+id/separatorView"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary" />
     <!-- view for AdMob Banner Ad -->
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@id/separatorView"
         android:layout_centerHorizontal="true"
         ads:adSize="BANNER"
         ads:adUnitId="@string/banner_ad_unit_id" />
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/adView"
+        android:layout_alignParentTop="true">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="@dimen/heyButtonSize"
+            android:layout_height="@dimen/heyButtonSize"
+            android:layout_gravity="center"
+            android:background="@mipmap/ic_launcher" />
+    </android.support.design.widget.CoordinatorLayout>
+
 
 </RelativeLayout>

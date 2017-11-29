@@ -7,6 +7,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -35,10 +36,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String MY_APP_ADS_ID = "ca-app-pub-4011387854346003~9386990030";
 
     /**
+     * Toast son off
+     */
+    private Toast toast;
+
+    /**
      * Vue de la pub
      */
     private AdView adView;
-
     /**
      * Listener de la pub. cache la pub au retour sur l'appli.
      * Enregistre dans les sharedPref que l'utilisateur a deja cliqué à l'ouverture de la pub
@@ -61,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
             //register in DB
         }
     };
+    /**
+     * Gere le son
+     */
+    private AudioManager audioManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,32 +84,37 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
+
+        initAudioManager();
+        initToast();
+
         // initialize the Mobile Ads SDK
         MobileAds.initialize(this, MY_APP_ADS_ID);
         // Load an ad into the AdMob banner view.
         //https://developer.android.com/training/data-storage/shared-preferences.html
         final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         final boolean alreadyClickOnAd = sharedPref.getBoolean(getString(R.string.is_user_ad_clicker), false);
+        adView = findViewById(R.id.adView);
         if (!alreadyClickOnAd) {
-            adView = findViewById(R.id.adView);
             AdRequest adRequest = new AdRequest.Builder()
                     .setRequestAgent("android_studio:ad_template")
                     .addTestDevice(MY_OP3T_TESTDEVICE_ID)
                     .build();
             adView.loadAd(adRequest);
             adView.setAdListener(adListener);
+        } else {
+            adView.setVisibility(View.GONE);
         }
         final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.hey);
         this.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                AudioManager audioManager = getAudioManager();
                 if (audioManager != null && audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) {
-                    Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.youShouldActivateSound), Toast.LENGTH_LONG);
                     //audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
-                    toast.show();
+                    Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.youShouldActivateSound,
+                            Snackbar.LENGTH_SHORT)
+                            .show();
+//                    toast.show();
                 }
-
-
                 if (mediaPlayer.isPlaying()) {
                     mediaPlayer.seekTo(0);
                 }
@@ -109,13 +123,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public AudioManager getAudioManager() {
-        AudioManager audioManager;
+    /**
+     * initialise le toast
+     */
+    private void initToast() {
+        toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.youShouldActivateSound), Toast.LENGTH_SHORT);
+    }
+
+    /**
+     * Initialise l'attribut audioManager selon la version d'android
+     */
+    public void initAudioManager() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             audioManager = getApplicationContext().getSystemService(AudioManager.class);
         } else {
             audioManager = (AudioManager) getApplicationContext().getSystemService(AUDIO_SERVICE);
         }
-        return audioManager;
     }
 }
