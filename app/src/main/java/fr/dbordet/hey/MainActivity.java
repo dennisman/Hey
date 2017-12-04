@@ -1,7 +1,6 @@
 package fr.dbordet.hey;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
@@ -9,7 +8,6 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -21,7 +19,7 @@ import com.google.android.gms.ads.MobileAds;
 
 import static fr.dbordet.hey.HeyWidget.HEY_SERVICE;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DialogSoundManagerOwner {
     /**
      * Identifiant de ton téléphone.
      * Utile pour empecher d'avoir des pubs et fausser les résultats publicitaires.
@@ -73,10 +71,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     /**
-     * builder de la popUp d'aler son off
-     */
-    private AlertDialog.Builder alertDialogBuilder;
-    /**
      * Gere le son
      */
     private AudioManager audioManager;
@@ -86,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
             upSound();
         }
     };
+
+    private DialogSoundManagerFragment dialogSoundManager;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,18 +117,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             adView.setVisibility(View.GONE);
         }
-        final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.hey);
+        mediaPlayer = MediaPlayer.create(this, R.raw.hey);
         this.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (audioManager != null && audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) {
 //                    snackbar.show();
 //                    toast.show();
-                    alertDialogBuilder.create().show();
+                    dialogSoundManager.show(getFragmentManager(), DialogSoundManagerFragment.class.getName());
+//                    alertDialogBuilder.create().show();
                 } else {
-                    if (mediaPlayer.isPlaying()) {
-                        mediaPlayer.seekTo(0);
-                    }
-                    mediaPlayer.start();
+                    play();
                 }
             }
         });
@@ -148,17 +143,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAlertDialogBuilder() {
-        //TODO create custom dialog with seekbar for volume
-        this.alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage(R.string.youShouldActivateSound)
-                .setTitle(R.string.app_name)
-                .setPositiveButton(R.string.upSound, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        upSound();
-                    }
-                })
-                .setNegativeButton(R.string.back, null);
+        dialogSoundManager = new DialogSoundManagerFragment();
     }
 
     private void initSnackbar() {
@@ -188,5 +173,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void upSound() {
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 2, 0);
+    }
+
+    @Override
+    public void play() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.seekTo(0);
+        }
+        mediaPlayer.start();
     }
 }
