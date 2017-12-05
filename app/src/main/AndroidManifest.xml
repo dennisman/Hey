@@ -15,7 +15,7 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:taskAffinity="">
 
             <!-- ajout de taskaffinity : the trampoline activity should include the attribute assignment android:taskAffinity="". -->
@@ -30,7 +30,7 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <receiver android:name=".HeyWidget">
+        <receiver android:name=".widget.HeyWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -51,7 +51,7 @@
             android:theme="@android:style/Theme.Translucent" />
 
         <service
-            android:name=".MediaService"
+            android:name=".service.MediaService"
             android:enabled="true"
             android:exported="false" />
     </application>

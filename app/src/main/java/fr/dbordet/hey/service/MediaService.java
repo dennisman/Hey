@@ -1,9 +1,12 @@
-package fr.dbordet.hey;
+package fr.dbordet.hey.service;
 
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.IBinder;
+
+import fr.dbordet.hey.R;
+import fr.dbordet.hey.widget.HeyWidget;
 
 public class MediaService extends Service {
     private MediaPlayer mediaPlayer;

@@ -1,11 +1,10 @@
-package fr.dbordet.hey;
+package fr.dbordet.hey.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +16,12 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
-import static fr.dbordet.hey.HeyWidget.HEY_SERVICE;
+import fr.dbordet.hey.R;
+import fr.dbordet.hey.fragment.DialogSoundManagerFragment;
+import fr.dbordet.hey.helper.InitHelper;
+import fr.dbordet.hey.service.MediaService;
+
+import static fr.dbordet.hey.widget.HeyWidget.HEY_SERVICE;
 
 public class MainActivity extends AppCompatActivity implements DialogSoundManagerOwner {
     /**
@@ -83,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
 
     private DialogSoundManagerFragment dialogSoundManager;
     private MediaPlayer mediaPlayer;
+    private int noSoundActionNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,13 +123,11 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
             adView.setVisibility(View.GONE);
         }
         mediaPlayer = MediaPlayer.create(this, R.raw.hey);
+        noSoundActionNumber = 0;
         this.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (audioManager != null && audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) {
-//                    snackbar.show();
-//                    toast.show();
-                    dialogSoundManager.show(getFragmentManager(), DialogSoundManagerFragment.class.getName());
-//                    alertDialogBuilder.create().show();
+                    handleNoSound();
                 } else {
                     play();
                 }
@@ -133,10 +136,34 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
     }
 
     /**
+     * Gere l'action a effectué lorsque le son est désactivé et que l'utilisateur souhaite appuyer sur
+     * le bouton hey de l'activité
+     */
+    private void handleNoSound() {
+        int action = noSoundActionNumber % 3;
+        switch (action) {
+            case 0:
+                toast.show();
+                break;
+            case 1:
+                toast.cancel();
+                snackbar.show();
+                break;
+            case 2:
+            default:
+                snackbar.dismiss();
+                dialogSoundManager.show(getFragmentManager(), DialogSoundManagerFragment.class.getName());
+                break;
+
+        }
+        noSoundActionNumber++;
+    }
+
+    /**
      * initialisation des différents composants
      */
     private void init() {
-        initAudioManager();
+        audioManager = InitHelper.initAudioManager(this.getApplicationContext());
         initToast();
         initSnackbar();
         initAlertDialogBuilder();
@@ -158,17 +185,6 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
      */
     private void initToast() {
         toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.youShouldActivateSound), Toast.LENGTH_SHORT);
-    }
-
-    /**
-     * Initialise l'attribut audioManager selon la version d'android
-     */
-    public void initAudioManager() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            audioManager = getApplicationContext().getSystemService(AudioManager.class);
-        } else {
-            audioManager = (AudioManager) getApplicationContext().getSystemService(AUDIO_SERVICE);
-        }
     }
 
     private void upSound() {

@@ -1,4 +1,4 @@
-package fr.dbordet.hey;
+package fr.dbordet.hey.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 import android.widget.RemoteViews;
+
+import fr.dbordet.hey.R;
+import fr.dbordet.hey.helper.InitHelper;
+import fr.dbordet.hey.service.MediaService;
 
 /**
  * Implementation of App Widget functionality.
@@ -30,7 +33,7 @@ public class HeyWidget extends AppWidgetProvider {
         } else {
             views.setImageViewResource(R.id.appwidget_btn, R.mipmap.ic_launcher_red);
         }
-        Intent intent = new Intent(context, HeyWidget.class);
+        final Intent intent = new Intent(context, HeyWidget.class);
         intent.setAction(HEY_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.appwidget_btn, pendingIntent);
@@ -50,12 +53,7 @@ public class HeyWidget extends AppWidgetProvider {
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
         super.onEnabled(context);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.d(getClass().getCanonicalName(), "foregroundService");
-            context.startForegroundService(new Intent(context, MediaService.class));
-        } else {
-            context.startService(new Intent(context, MediaService.class));
-        }
+        InitHelper.launchService(context, new Intent(context, MediaService.class));
     }
 
     @Override
@@ -72,11 +70,7 @@ public class HeyWidget extends AppWidgetProvider {
             final Intent serviceIntent = new Intent(context, MediaService.class);
             serviceIntent.setAction(HEY_SERVICE);
             serviceIntent.setData(Uri.parse(DEFAULT_SOUND_NAME));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(serviceIntent);
-            } else {
-                context.startService(serviceIntent);
-            }
+            InitHelper.launchService(context, serviceIntent);
         }
     }
 }

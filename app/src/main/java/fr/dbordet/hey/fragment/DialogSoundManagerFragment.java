@@ -1,19 +1,18 @@
-package fr.dbordet.hey;
+package fr.dbordet.hey.fragment;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.SeekBar;
 
-import static android.content.Context.AUDIO_SERVICE;
+import fr.dbordet.hey.R;
+import fr.dbordet.hey.activity.DialogSoundManagerOwner;
+import fr.dbordet.hey.helper.InitHelper;
 
 /**
  * Fragment Custom pour gérer le son
@@ -21,19 +20,21 @@ import static android.content.Context.AUDIO_SERVICE;
 
 public class DialogSoundManagerFragment extends DialogFragment {
 
-    private SeekBar volumeSeekbar;
+    /**
+     * Gere les paramètres sonores
+     */
     private AudioManager audioManager;
-    private AlertDialog.Builder alertDialogBuilder;
+
+    /**
+     * Pour communiquer avec l'activité et lui faire jouer "hey"
+     */
     private DialogSoundManagerOwner callback;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-
-
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
+    /**
+     * Surcharge pour récupérer l'activité appelante
+     *
+     * @param context l'activité appelante
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -51,24 +52,44 @@ public class DialogSoundManagerFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        //recupération de la seekbar
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialog_soundmanager, null);
-        volumeSeekbar = view.findViewById(R.id.seekBar);
-        initAudioManager();
+        final SeekBar volumeSeekbar = view.findViewById(R.id.seekBar);
+
+        //initialisation des composants
+        audioManager = InitHelper.initAudioManager(getActivity().getApplicationContext());
+        initSeekbar(volumeSeekbar);
+
+        //création du dialog
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setView(view)
+                .setNegativeButton(R.string.back, null);
+        return alertDialogBuilder.create();
+    }
+
+    /**
+     * initialisation de la seekbar
+     *
+     * @param volumeSeekbar la seekbar à initialiser
+     */
+    private void initSeekbar(SeekBar volumeSeekbar) {
+        //initalisation du pas et de la taille grâces aux paramètres sonores
         getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
         volumeSeekbar.setMax(audioManager
                 .getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         volumeSeekbar.setProgress(audioManager
                 .getStreamVolume(AudioManager.STREAM_MUSIC));
 
-
         volumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar arg0) {
+                //noAction
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar arg0) {
+                //noAction
             }
 
             @Override
@@ -80,18 +101,5 @@ public class DialogSoundManagerFragment extends DialogFragment {
                 }
             }
         });
-        alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setView(view)
-                .setNegativeButton(R.string.back, null);
-
-        return alertDialogBuilder.create();
-    }
-
-    public void initAudioManager() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            audioManager = getActivity().getApplicationContext().getSystemService(AudioManager.class);
-        } else {
-            audioManager = (AudioManager) getActivity().getApplicationContext().getSystemService(AUDIO_SERVICE);
-        }
     }
 }

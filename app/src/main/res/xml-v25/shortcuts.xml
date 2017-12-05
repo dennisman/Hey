@@ -10,7 +10,7 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:data="hey2"
-            android:targetClass="fr.dbordet.hey.MainActivity"
+            android:targetClass="fr.dbordet.hey.activity.MainActivity"
             android:targetPackage="fr.dbordet.hey" />
         <!-- If your shortcut is associated with multiple intents, include them
              here. The last intent in the list determines what the user sees when
