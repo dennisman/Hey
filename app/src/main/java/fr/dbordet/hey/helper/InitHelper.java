@@ -1,9 +1,14 @@
 package fr.dbordet.hey.helper;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 
 import static android.content.Context.AUDIO_SERVICE;
 
@@ -13,6 +18,10 @@ import static android.content.Context.AUDIO_SERVICE;
 
 public class InitHelper {
 
+    /**
+     * Identifiant de la notif d'action en Foreground
+     */
+    private static final int NOTIF_FOREGRD_IDENTIFIER = 1;
     /**
      * Pas de constructeur pour cette classe Helper
      */
@@ -41,6 +50,27 @@ public class InitHelper {
             context.startForegroundService(serviceIntent);
         } else {
             context.startService(serviceIntent);
+        }
+    }
+
+    public static void initNotifForeground(Service context) {
+        if (Build.VERSION.SDK_INT >= 26) {
+            final String CHANNEL_ID = "my_channel_01";
+            final NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.enableVibration(false);
+            channel.enableLights(false);
+            final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setContentTitle("title")
+                    .setContentText("text").build();
+
+            context.startForeground(NOTIF_FOREGRD_IDENTIFIER, notification);
         }
     }
 }
