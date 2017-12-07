@@ -1,9 +1,11 @@
 package fr.dbordet.hey.fragment;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ public class DialogSoundManagerFragment extends DialogFragment {
 
     /**
      * Surcharge pour récupérer l'activité appelante
+     * Attention : n'existe pas avant l'api 23
      *
      * @param context l'activité appelante
      */
@@ -46,8 +49,29 @@ public class DialogSoundManagerFragment extends DialogFragment {
             throw new ClassCastException(context.toString()
                     + " must implement DialogSoundManagerOwner");
         }
-
     }
+
+    /**
+     * Surcharge pour récupérer l'activité appelante
+     * deprecated < 23
+     *
+     * @param activity l'activité appelante
+     */
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            // Verify that the host activity implements the callback interface
+            try {
+                callback = (DialogSoundManagerOwner) activity;
+            } catch (ClassCastException e) {
+                // The activity doesn't implement the interface, throw exception
+                throw new ClassCastException(activity.toString()
+                        + " must implement DialogSoundManagerOwner");
+            }
+        }
+    }
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

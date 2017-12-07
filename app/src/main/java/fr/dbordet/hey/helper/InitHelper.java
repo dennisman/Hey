@@ -54,7 +54,7 @@ public class InitHelper {
     }
 
     public static void initNotifForeground(Service context) {
-        if (Build.VERSION.SDK_INT >= 26) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final String CHANNEL_ID = "my_channel_01";
             final NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
                     "Channel human readable title",
