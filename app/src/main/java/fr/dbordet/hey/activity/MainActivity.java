@@ -1,11 +1,12 @@
 package fr.dbordet.hey.activity;
 
-import android.app.DialogFragment;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -51,44 +52,10 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
     private Snackbar snackbar;
 
     /**
-     * Vue de la pub
-     */
-    private AdView adView;
-    /**
-     * Listener de la pub. cache la pub au retour sur l'appli.
-     * Enregistre dans les sharedPref que l'utilisateur a deja cliqué à l'ouverture de la pub
-     */
-    private final AdListener adListener = new AdListener() {
-
-        @Override
-        public void onAdClosed() {
-            super.onAdClosed();
-            adView.setVisibility(View.GONE);
-        }
-
-        @Override
-        public void onAdOpened() {
-            super.onAdOpened();
-            final SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
-            final SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(getString(R.string.is_user_ad_clicker), true);
-            editor.apply();
-            //register in DB
-        }
-    };
-    /**
      * Gere le son
      */
     @Nullable
     private AudioManager audioManager;
-    private final View.OnClickListener soundHalfMaxListener = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            upSound();
-        }
-    };
-
-    private DialogFragment dialogSoundManager;
     private MediaPlayer mediaPlayer;
     private int noSoundActionNumber;
     private boolean isDialogLoaded = false;
@@ -108,24 +75,6 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
         setContentView(R.layout.activity_main);
 
         init();
-
-        // initialize the Mobile Ads SDK
-        MobileAds.initialize(this, MY_APP_ADS_ID);
-        // Load an ad into the AdMob banner view.
-        //https://developer.android.com/training/data-storage/shared-preferences.html
-        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        final boolean alreadyClickOnAd = sharedPref.getBoolean(getString(R.string.is_user_ad_clicker), false);
-        adView = findViewById(R.id.adView);
-        if (!alreadyClickOnAd) {
-            final AdRequest adRequest = new AdRequest.Builder()
-                    .setRequestAgent("android_studio:ad_template")
-                    .addTestDevice(MY_OP3T_TESTDEVICE_ID)
-                    .build();
-            adView.loadAd(adRequest);
-            adView.setAdListener(adListener);
-        } else {
-            adView.setVisibility(View.GONE);
-        }
         mediaPlayer = MediaPlayer.create(this, R.raw.hey);
         noSoundActionNumber = 0;
         this.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
@@ -157,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
             default:
                 snackbar.dismiss();
                 if (!isDialogLoaded) {
-                    dialogSoundManager.show(getFragmentManager(), DialogSoundManagerFragment.class.getName());
+                    new DialogSoundManagerFragment().show(getFragmentManager(), DialogSoundManagerFragment.class.getName());
                 }
                 isDialogLoaded = true;
                 break;
@@ -171,19 +120,71 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
      */
     private void init() {
         audioManager = InitHelper.initAudioManager(this.getApplicationContext());
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O || !this.getSystemService(ActivityManager.class).isLowRamDevice()) {
+            initAdView();
+        }
         initToast();
         initSnackbar();
-        initAlertDialogBuilder();
     }
 
-    private void initAlertDialogBuilder() {
-        dialogSoundManager = new DialogSoundManagerFragment();
+    private void initAdView() {
+        /*
+         * Vue de la pub
+         */
+        final AdView adView = findViewById(R.id.adView);
+                /*
+         * Listener de la pub. cache la pub au retour sur l'appli.
+         * Enregistre dans les sharedPref que l'utilisateur a deja cliqué à l'ouverture de la pub
+         */
+        final AdListener adListener = new AdListener() {
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                adView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+                final SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+                final SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(getString(R.string.is_user_ad_clicker), true);
+                editor.apply();
+                //register in DB
+            }
+        };
+
+        // initialize the Mobile Ads SDK
+        MobileAds.initialize(this, MY_APP_ADS_ID);
+        // Load an ad into the AdMob banner view.
+        //https://developer.android.com/training/data-storage/shared-preferences.html
+        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        final boolean alreadyClickOnAd = sharedPref.getBoolean(getString(R.string.is_user_ad_clicker), false);
+
+        if (!alreadyClickOnAd) {
+            final AdRequest adRequest = new AdRequest.Builder()
+                    .setRequestAgent("android_studio:ad_template")
+                    .addTestDevice(MY_OP3T_TESTDEVICE_ID)
+                    .build();
+            adView.loadAd(adRequest);
+            adView.setAdListener(adListener);
+        } else {
+            adView.setVisibility(View.GONE);
+        }
+
+
     }
 
     private void initSnackbar() {
         snackbar = Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.youShouldActivateSound,
                 Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.upSound, soundHalfMaxListener);
+        snackbar.setAction(R.string.upSound, new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                upSound();
+            }
+        });
 
     }
 

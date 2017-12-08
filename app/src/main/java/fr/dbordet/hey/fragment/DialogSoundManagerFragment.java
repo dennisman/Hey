@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -133,8 +132,8 @@ public class DialogSoundManagerFragment extends DialogFragment {
     }
 
     @Override
-    public void onCancel(DialogInterface dialog) {
-        super.onCancel(dialog);
+    public void onDestroy() {
         callback.back();
+        super.onDestroy();
     }
 }
