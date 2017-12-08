@@ -1,11 +1,13 @@
 package fr.dbordet.hey.activity;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
         public void onAdOpened() {
             super.onAdOpened();
             final SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
+            final SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(getString(R.string.is_user_ad_clicker), true);
             editor.apply();
             //register in DB
@@ -77,22 +79,24 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
     /**
      * Gere le son
      */
+    @Nullable
     private AudioManager audioManager;
     private final View.OnClickListener soundHalfMaxListener = new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
+        public void onClick(final View v) {
             upSound();
         }
     };
 
-    private DialogSoundManagerFragment dialogSoundManager;
+    private DialogFragment dialogSoundManager;
     private MediaPlayer mediaPlayer;
     private int noSoundActionNumber;
+    private boolean isDialogLoaded = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent createIntent = getIntent();
+        final Intent createIntent = getIntent();
         if (createIntent != null && createIntent.getData() != null) { // appShortcut par exemple
             final Intent serviceIntent = new Intent(this, MediaService.class);
             serviceIntent.setAction(HEY_SERVICE);
@@ -113,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
         final boolean alreadyClickOnAd = sharedPref.getBoolean(getString(R.string.is_user_ad_clicker), false);
         adView = findViewById(R.id.adView);
         if (!alreadyClickOnAd) {
-            AdRequest adRequest = new AdRequest.Builder()
+            final AdRequest adRequest = new AdRequest.Builder()
                     .setRequestAgent("android_studio:ad_template")
                     .addTestDevice(MY_OP3T_TESTDEVICE_ID)
                     .build();
@@ -125,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
         mediaPlayer = MediaPlayer.create(this, R.raw.hey);
         noSoundActionNumber = 0;
         this.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 if (audioManager != null && audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) {
                     handleNoSound();
                 } else {
@@ -140,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
      * le bouton hey de l'activité
      */
     private void handleNoSound() {
-        int action = noSoundActionNumber % 3;
+        final int action = noSoundActionNumber % 3;
         switch (action) {
             case 0:
                 toast.show();
@@ -152,7 +156,10 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
             case 2:
             default:
                 snackbar.dismiss();
-                dialogSoundManager.show(getFragmentManager(), DialogSoundManagerFragment.class.getName());
+                if (!isDialogLoaded) {
+                    dialogSoundManager.show(getFragmentManager(), DialogSoundManagerFragment.class.getName());
+                }
+                isDialogLoaded = true;
                 break;
 
         }
@@ -188,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
     }
 
     private void upSound() {
+        assert audioManager != null;
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 2, 0);
     }
 
@@ -197,5 +205,10 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
             mediaPlayer.seekTo(0);
         }
         mediaPlayer.start();
+    }
+
+    @Override
+    public void back() {
+        isDialogLoaded = false;
     }
 }

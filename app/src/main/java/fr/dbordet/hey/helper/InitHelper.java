@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 import static android.content.Context.AUDIO_SERVICE;
@@ -32,8 +34,9 @@ public class InitHelper {
     /**
      * Initialisation de l'audioManager selon la version d'android
      */
-    public static AudioManager initAudioManager(Context context) {
-        AudioManager audioManager;
+    @Nullable
+    public static AudioManager initAudioManager(@NonNull final Context context) {
+        final AudioManager audioManager;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             audioManager = context.getSystemService(AudioManager.class);
         } else {
@@ -45,7 +48,7 @@ public class InitHelper {
     /**
      * Lancement d'un service selon la version d'android
      */
-    public static void launchService(Context context, Intent serviceIntent) {
+    public static void launchService(@NonNull final Context context, final Intent serviceIntent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(serviceIntent);
         } else {
@@ -53,7 +56,7 @@ public class InitHelper {
         }
     }
 
-    public static void initNotifForeground(Service context) {
+    public static void initNotifForeground(@NonNull final Service context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final String CHANNEL_ID = "my_channel_01";
             final NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
@@ -66,7 +69,7 @@ public class InitHelper {
                 notificationManager.createNotificationChannel(channel);
             }
 
-            Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+            final Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setContentTitle("title")
                     .setContentText("text").build();
 

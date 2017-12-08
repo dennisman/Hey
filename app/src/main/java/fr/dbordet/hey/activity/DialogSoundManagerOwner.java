@@ -6,4 +6,6 @@ package fr.dbordet.hey.activity;
 
 public interface DialogSoundManagerOwner {
     void play();
+
+    void back();
 }
