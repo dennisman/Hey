@@ -52,13 +52,6 @@ public class HeyWidget extends AppWidgetProvider {
     }
 
     @Override
-    public void onEnabled(@NonNull final Context context) {
-        // Enter relevant functionality for when the first widget is created
-        super.onEnabled(context);
-        InitHelper.launchService(context, new Intent(context, MediaService.class));
-    }
-
-    @Override
     public void onDisabled(@NonNull final Context context) {
         // Enter relevant functionality for when the last widget is disabled
         context.stopService(new Intent(context, MediaService.class));
