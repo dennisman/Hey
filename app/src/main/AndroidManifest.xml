@@ -8,9 +8,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!--pour un multiple apk android go-->
-    <uses-feature
-        android:name="android.hardware.ram.low"
-        android:required="true" />
+    <!--<uses-feature-->
+    <!--android:name="android.hardware.ram.low"-->
+    <!--android:required="true" />-->
 
     <application
         android:allowBackup="true"
