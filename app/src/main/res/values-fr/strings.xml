@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_label_short">Voix féminine</string>
+    <string name="shortcut_label_long">@string/shortcut_label_short</string>
+    <string name="shortcut_label_disable">Désactivé</string>
+
+    <string name="youShouldActivateSound">Hey! Tu devrais activer le son!</string>
+    <string name="upSound">Monter le son!</string>
+    <string name="back">Retour</string>
+</resources>

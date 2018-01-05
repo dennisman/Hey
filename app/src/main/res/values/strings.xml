@@ -1,24 +1,21 @@
 <resources>
-    <string name="app_name">Hey</string>
-    <string name="appwidget_text">HEY!</string>
-    <string name="add_widget">Add widget</string>
-    <string name="title_activity_pub">Pub</string>
+    <string name="app_name" translatable="false">Hey</string>
+    <string name="appwidget_text" translatable="false">HEY!</string>
+    <string name="add_widget" translatable="false">Add widget</string>
+    <string name="title_activity_pub" translatable="false">Pub</string>
 
-    <string name="action_settings">Settings</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="shortcut_label_short">Hey girl !</string>
+    <string name="shortcut_label_short">Female voice</string>
     <string name="shortcut_label_long">@string/shortcut_label_short</string>
-    <string name="shortcut_label_disable">pas Ah!</string>
+    <string name="shortcut_label_disable">Disabled</string>
 
-    <string name="youShouldActivateSound">Hey! Tu devrais activer le son!</string>
-    <string name="upSound">Monter le son!</string>
-    <string name="back">Retour</string>
+    <string name="youShouldActivateSound">Hey! You should activate the sound!</string>
+    <string name="upSound">Sound Up!</string>
+    <string name="back">Back</string>
     <!-- -
         This is an ad unit ID for a banner test ad. Replace with your own banner ad unit id.
         For more information, see https://support.google.com/admob/answer/3052638
     <!- -->
-    <string name="banner_ad_unit_id">ca-app-pub-4011387854346003/4973226012</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-4011387854346003/4973226012</string>
 
-    <string name="is_user_ad_clicker">is_user_ad_clicker</string>
+    <string name="is_user_ad_clicker" translatable="false">is_user_ad_clicker</string>
 </resources>
