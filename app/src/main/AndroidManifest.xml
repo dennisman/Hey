@@ -7,11 +7,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!--pour un multiple apk android go-->
-    <!--<uses-feature-->
-    <!--android:name="android.hardware.ram.low"-->
-    <!--android:required="true" />-->
-
+    <!-- pour un multiple apk android go -->
+    <!-- <uses-feature -->
+    <!-- android:name="android.hardware.ram.low" -->
+    <!-- android:required="true" /> -->
     <application
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
@@ -22,7 +21,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.MainActivity"
-            android:taskAffinity="">
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.NoActionBar">
 
             <!-- ajout de taskaffinity : the trampoline activity should include the attribute assignment android:taskAffinity="". -->
             <intent-filter>
@@ -60,6 +60,19 @@
             android:name=".service.MediaService"
             android:enabled="true"
             android:exported="false" />
+
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="fr.dbordet.hey.activity.MainActivity" />
+
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
