@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
@@ -23,6 +24,7 @@ public class HeyWidget extends AppWidgetProvider {
     public static final String HEY_SERVICE = "heySoundService";
     private static final String HEY_ACTION = "heySoundAction";
     private static final String DEFAULT_SOUND_NAME = "hey";
+    private static final String FEMALE_SOUND_NAME = "hey2";
 
 
     private static void updateAppWidget(@NonNull final Context context, @NonNull final AppWidgetManager appWidgetManager,
@@ -39,6 +41,7 @@ public class HeyWidget extends AppWidgetProvider {
         intent.setAction(HEY_ACTION);
         final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.appwidget_btn, pendingIntent);
+
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -65,7 +68,7 @@ public class HeyWidget extends AppWidgetProvider {
         if (intent != null && HEY_ACTION.equals(intent.getAction())) {
             final Intent serviceIntent = new Intent(context, MediaService.class);
             serviceIntent.setAction(HEY_SERVICE);
-            serviceIntent.setData(Uri.parse(DEFAULT_SOUND_NAME));
+            serviceIntent.setData(Uri.parse(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("is_male", true) ? DEFAULT_SOUND_NAME : FEMALE_SOUND_NAME));
             InitHelper.launchService(context, serviceIntent);
         }
     }

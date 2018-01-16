@@ -1,5 +1,6 @@
 package fr.dbordet.hey.activity;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
@@ -78,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
         setContentView(R.layout.activity_main);
 
         init();
-        mediaPlayer = MediaPlayer.create(this, R.raw.hey);
         noSoundActionNumber = 0;
         this.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             public void onClick(final View v) {
@@ -94,6 +97,21 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        final Switch switchGender = menu.findItem(R.id.action_switchgender).getActionView().findViewById(R.id.switchgender);
+        switchGender.setChecked(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(getString(R.string.is_male), true));
+        switchGender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(final CompoundButton compoundButton, final boolean isMale) {
+                final SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+                editor.putBoolean(getString(R.string.is_male), isMale);
+                editor.apply();
+                mediaPlayer.stop();
+                mediaPlayer.reset();
+                mediaPlayer.release();
+                mediaPlayer = InitHelper.initMediaPlayer(MainActivity.this, isMale);
+            }
+        });
+
         return true;
     }
 
@@ -133,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O || !this.getSystemService(ActivityManager.class).isLowRamDevice()) {
             initAdView();
         }
+        mediaPlayer = InitHelper.initMediaPlayer(this);
         initToast();
         initSnackbar();
     }
@@ -157,8 +176,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
             @Override
             public void onAdOpened() {
                 super.onAdOpened();
-                final SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
-                final SharedPreferences.Editor editor = sharedPref.edit();
+                final SharedPreferences.Editor editor = MainActivity.this.getPreferences(Context.MODE_PRIVATE).edit();
                 editor.putBoolean(getString(R.string.is_user_ad_clicker), true);
                 editor.apply();
                 //register in DB
@@ -169,8 +187,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
         MobileAds.initialize(this, MY_APP_ADS_ID);
         // Load an ad into the AdMob banner view.
         //https://developer.android.com/training/data-storage/shared-preferences.html
-        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        final boolean alreadyClickOnAd = sharedPref.getBoolean(getString(R.string.is_user_ad_clicker), false);
+        final boolean alreadyClickOnAd = getPreferences(Context.MODE_PRIVATE).getBoolean(getString(R.string.is_user_ad_clicker), false);
 
         if (!alreadyClickOnAd) {
             final AdRequest adRequest = new AdRequest.Builder()
@@ -201,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
     /**
      * initialise le toast
      */
+    @SuppressLint("ShowToast")
     private void initToast() {
         toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.youShouldActivateSound), Toast.LENGTH_SHORT);
     }
@@ -225,10 +243,9 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-
+//            case R.id.action_settings:
+//                startActivity(new Intent(this, SettingsActivity.class));
+//                return true;
         }
         return super.onOptionsItemSelected(item);
     }

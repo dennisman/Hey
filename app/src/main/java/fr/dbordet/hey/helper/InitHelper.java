@@ -7,10 +7,14 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+
+import fr.dbordet.hey.R;
 
 import static android.content.Context.AUDIO_SERVICE;
 
@@ -24,6 +28,10 @@ public class InitHelper {
      * Identifiant de la notif d'action en Foreground
      */
     private static final int NOTIF_FOREGRD_IDENTIFIER = 1;
+
+    private static final String FEMALE_SOUND_NAME = "hey2";
+    private static final String MALE_SOUND_NAME = "hey";
+
     /**
      * Pas de constructeur pour cette classe Helper
      */
@@ -75,5 +83,21 @@ public class InitHelper {
 
             context.startForeground(NOTIF_FOREGRD_IDENTIFIER, notification);
         }
+    }
+
+    public static MediaPlayer initMediaPlayer(final Context context) {
+        return initMediaPlayer(context, PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext()).getBoolean(context.getString(R.string.is_male), true));
+    }
+
+
+    public static MediaPlayer initMediaPlayer(final Context context, final boolean isMale) {
+        final String sound;
+        if (isMale) {
+            sound = MALE_SOUND_NAME;
+        } else {
+            sound = FEMALE_SOUND_NAME;
+
+        }
+        return MediaPlayer.create(context, context.getApplicationContext().getResources().getIdentifier(sound, "raw", context.getPackageName()));
     }
 }

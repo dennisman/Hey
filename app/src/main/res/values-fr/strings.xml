@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="shortcut_label_short">Voix féminine</string>
-    <string name="shortcut_label_long">@string/shortcut_label_short</string>
+    <string name="shortcut_male_label_short">Voix Masculine</string>
     <string name="shortcut_label_disable">Désactivé</string>
 
     <string name="youShouldActivateSound">Hey! Tu devrais activer le son!</string>
     <string name="upSound">Monter le son!</string>
     <string name="back">Retour</string>
     <string name="settings">Paramètres</string>
+
+    <!--Preferences-->
+    <string name="pref_title_poison_mode">Mode Poison</string>
+    <string name="pref_description_poisonmode">Active le mode poison sur le téléphone de tes amis pour les piéger</string>
+
+    <string name="pref_title_troll_name">Nom du Troll</string>
+    <string name="pref_default_troll_name">Dennis</string>
+    <string name="male_female">Homme/Femme</string>
 </resources>

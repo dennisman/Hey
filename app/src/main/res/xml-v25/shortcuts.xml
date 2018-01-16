@@ -2,9 +2,26 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
         android:enabled="true"
-        android:icon="@android:drawable/ic_media_play"
+        android:icon="@drawable/ic_male_black"
         android:shortcutDisabledMessage="@string/shortcut_label_disable"
-        android:shortcutId="compose"
+        android:shortcutId="maleShortCut"
+        android:shortcutLongLabel="@string/shortcut_male_label_long"
+        android:shortcutShortLabel="@string/shortcut_male_label_short">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="hey"
+            android:targetClass="fr.dbordet.hey.activity.MainActivity"
+            android:targetPackage="fr.dbordet.hey" />
+        <!-- If your shortcut is associated with multiple intents, include them
+             here. The last intent in the list determines what the user sees when
+             they launch this shortcut. -->
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_female_black"
+        android:shortcutDisabledMessage="@string/shortcut_label_disable"
+        android:shortcutId="femaleShortCut"
         android:shortcutLongLabel="@string/shortcut_label_long"
         android:shortcutShortLabel="@string/shortcut_label_short">
         <intent
@@ -17,5 +34,4 @@
              they launch this shortcut. -->
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
-    <!-- Specify more shortcuts here. -->
 </shortcuts>
