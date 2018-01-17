@@ -7,7 +7,7 @@
     <string name="shortcut_label_short">Female voice</string>
     <string name="shortcut_label_long">@string/shortcut_label_short</string>
     <string name="shortcut_male_label_short">Male voice</string>
-    <string name="shortcut_male_label_long">@string/shortcut_label_short</string>
+    <string name="shortcut_male_label_long">@string/shortcut_male_label_short</string>
     <string name="shortcut_label_disable">Disabled</string>
 
     <string name="youShouldActivateSound">Hey! You should activate the sound!</string>

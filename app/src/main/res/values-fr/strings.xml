@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="shortcut_label_short">Voix féminine</string>
+    <string name="shortcut_label_short">Voix Féminine</string>
     <string name="shortcut_male_label_short">Voix Masculine</string>
     <string name="shortcut_label_disable">Désactivé</string>
 
