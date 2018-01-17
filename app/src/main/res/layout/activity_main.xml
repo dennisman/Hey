@@ -47,12 +47,12 @@
         android:layout_above="@id/adView"
         android:layout_alignParentTop="true">
 
-        <Button
+        <ImageView
             android:id="@+id/button"
             android:layout_width="@dimen/heyButtonSize"
             android:layout_height="@dimen/heyButtonSize"
             android:layout_gravity="center"
-            android:background="@mipmap/ic_launcher" />
+            ads:srcCompat="@drawable/roundimage_vect" />
     </android.support.design.widget.CoordinatorLayout>
 
 
