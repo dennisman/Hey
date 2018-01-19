@@ -17,8 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.Switch;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
@@ -97,20 +96,35 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        final Switch switchGender = menu.findItem(R.id.action_switchgender).getActionView().findViewById(R.id.switchgender);
-        switchGender.setChecked(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(getString(R.string.is_male), true));
-        switchGender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final RadioGroup gender = (RadioGroup) menu.findItem(R.id.action_gender).getActionView();
+        gender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(final CompoundButton compoundButton, final boolean isMale) {
+            public void onCheckedChanged(RadioGroup radioGroup, int id) {
                 final SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-                editor.putBoolean(getString(R.string.is_male), isMale);
+                editor.putBoolean(getString(R.string.is_male), id == R.id.male);
                 editor.apply();
                 mediaPlayer.stop();
                 mediaPlayer.reset();
                 mediaPlayer.release();
-                mediaPlayer = InitHelper.initMediaPlayer(MainActivity.this, isMale);
+                mediaPlayer = InitHelper.initMediaPlayer(MainActivity.this, id == R.id.male);
             }
         });
+        final boolean isMale = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(getString(R.string.is_male), true);
+        gender.check(isMale ? R.id.male : R.id.female);
+
+//        gender.setChecked(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(getString(R.string.is_male), true));
+//        gender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(final CompoundButton compoundButton, final boolean isMale) {
+//                final SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+//                editor.putBoolean(getString(R.string.is_male), isMale);
+//                editor.apply();
+//                mediaPlayer.stop();
+//                mediaPlayer.reset();
+//                mediaPlayer.release();
+//                mediaPlayer = InitHelper.initMediaPlayer(MainActivity.this, isMale);
+//            }
+//        });
 
         return true;
     }

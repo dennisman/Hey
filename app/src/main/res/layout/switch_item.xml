@@ -1,39 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="220dp"
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="end"
+    android:gravity="end"
     android:maxWidth="220dp"
-    android:paddingEnd="4dp"
-    android:paddingRight="4dp">
+    android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/right"
+    <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/male"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_male" />
+        android:button="@drawable/ic_male_selected"
+        android:padding="4dp" />
 
 
-    <Switch
-        android:id="@+id/switchgender"
+    <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/female"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/right"
-        android:layout_toStartOf="@id/right" />
-
-    <ImageView
-        android:id="@+id/left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/switchgender"
-        android:layout_toStartOf="@id/switchgender"
+        android:button="@drawable/ic_female_selected"
         android:foregroundGravity="right"
-        app:srcCompat="@drawable/ic_female" />
+        android:padding="4dp" />
 
 
-</RelativeLayout>
+</RadioGroup>

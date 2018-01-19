@@ -52,7 +52,7 @@
             android:layout_width="@dimen/heyButtonSize"
             android:layout_height="@dimen/heyButtonSize"
             android:layout_gravity="center"
-            ads:srcCompat="@drawable/roundimage_vect" />
+            ads:srcCompat="@drawable/ic_heymalik" />
     </android.support.design.widget.CoordinatorLayout>
 
 

@@ -8,7 +8,7 @@
     <!--app:showAsAction="ifRoom" />-->
     <item
 
-        android:id="@+id/action_switchgender"
+        android:id="@+id/action_gender"
         android:title="@string/male_female"
         app:actionLayout="@layout/switch_item"
         app:showAsAction="ifRoom" />
