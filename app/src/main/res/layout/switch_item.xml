@@ -11,7 +11,7 @@
         android:id="@+id/male"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:button="@drawable/ic_male_selected"
+        android:button="@drawable/ic_male"
         android:padding="4dp" />
 
 
@@ -19,7 +19,7 @@
         android:id="@+id/female"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:button="@drawable/ic_female_selected"
+        android:button="@drawable/ic_female"
         android:foregroundGravity="right"
         android:padding="4dp" />
 
