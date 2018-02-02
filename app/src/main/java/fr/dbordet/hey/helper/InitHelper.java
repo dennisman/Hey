@@ -1,5 +1,6 @@
 package fr.dbordet.hey.helper;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -54,6 +55,20 @@ public class InitHelper {
     }
 
     /**
+     * Initialisation de l'audioManager selon la version d'android
+     */
+    @Nullable
+    public static AlarmManager initAlarmManager(@NonNull final Context context) {
+        final AlarmManager alarmManager;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager = context.getSystemService(AlarmManager.class);
+        } else {
+            alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        }
+        return alarmManager;
+    }
+
+    /**
      * Lancement d'un service selon la version d'android
      */
     public static void launchService(@NonNull final Context context, final Intent serviceIntent) {
@@ -99,5 +114,9 @@ public class InitHelper {
 
         }
         return MediaPlayer.create(context, context.getApplicationContext().getResources().getIdentifier(sound, "raw", context.getPackageName()));
+    }
+
+    public static boolean initTrollMode(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext()).getBoolean(context.getString(R.string.troll_mode_label), false);
     }
 }

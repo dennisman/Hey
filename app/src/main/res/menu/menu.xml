@@ -7,9 +7,13 @@
     <!--android:title="@string/settings"-->
     <!--app:showAsAction="ifRoom" />-->
     <item
-
         android:id="@+id/action_gender"
         android:title="@string/male_female"
         app:actionLayout="@layout/switch_item"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_alarm"
+        android:icon="@drawable/ic_trollface"
+        android:title="@string/troll_mode_label"
+        app:showAsAction="never" />
 </menu>

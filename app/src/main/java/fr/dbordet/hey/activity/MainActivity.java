@@ -2,6 +2,8 @@ package fr.dbordet.hey.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +28,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
 import fr.dbordet.hey.R;
+import fr.dbordet.hey.broadcastreceiver.AlarmBroadcastReceiver;
 import fr.dbordet.hey.fragment.DialogSoundManagerFragment;
 import fr.dbordet.hey.helper.InitHelper;
 import fr.dbordet.hey.service.MediaService;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
      * Identifiant adMob de l'application, différent de l'id adMob de la adView
      */
     private static final String MY_APP_ADS_ID = "ca-app-pub-4011387854346003~9386990030";
+    private static final int ALARMREQUESTCODE = "ALARMREQUESTCODE".hashCode();
 
     /**
      * Toast son off
@@ -65,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
     private MediaPlayer mediaPlayer;
     private int noSoundActionNumber;
     private boolean isDialogLoaded = false;
+    private boolean trollMode;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -94,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         final RadioGroup gender = (RadioGroup) menu.findItem(R.id.action_gender).getActionView();
         gender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -111,20 +116,6 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
         });
         final boolean isMale = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(getString(R.string.is_male), true);
         gender.check(isMale ? R.id.male : R.id.female);
-
-//        gender.setChecked(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(getString(R.string.is_male), true));
-//        gender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(final CompoundButton compoundButton, final boolean isMale) {
-//                final SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-//                editor.putBoolean(getString(R.string.is_male), isMale);
-//                editor.apply();
-//                mediaPlayer.stop();
-//                mediaPlayer.reset();
-//                mediaPlayer.release();
-//                mediaPlayer = InitHelper.initMediaPlayer(MainActivity.this, isMale);
-//            }
-//        });
 
         return true;
     }
@@ -165,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O || !this.getSystemService(ActivityManager.class).isLowRamDevice()) {
             initAdView();
         }
+        trollMode = InitHelper.initTrollMode(this);//TODO modif le trollMode au clic
         mediaPlayer = InitHelper.initMediaPlayer(this);
         initToast();
         initSnackbar();
@@ -255,11 +247,18 @@ public class MainActivity extends AppCompatActivity implements DialogSoundManage
         isDialogLoaded = false;
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
-//            case R.id.action_settings:
-//                startActivity(new Intent(this, SettingsActivity.class));
-//                return true;
+            case R.id.action_alarm:
+                final Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
+                final PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                        this.getApplicationContext(), ALARMREQUESTCODE, intent, 0);
+                final AlarmManager alarmManager = InitHelper.initAlarmManager(this);
+                assert alarmManager != null;
+                alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
+                        + (5 * 1000), pendingIntent);
+                Toast.makeText(this, "Alarm set in " + 5 + " seconds", Toast.LENGTH_LONG).show();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

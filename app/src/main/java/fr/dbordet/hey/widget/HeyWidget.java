@@ -5,12 +5,14 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import fr.dbordet.hey.R;
 import fr.dbordet.hey.helper.InitHelper;
@@ -65,6 +67,12 @@ public class HeyWidget extends AppWidgetProvider {
     @Override
     public void onReceive(@NonNull final Context context, @Nullable final Intent intent) {
         super.onReceive(context, intent);
+        final AudioManager audioManager = InitHelper.initAudioManager(context);
+
+        if (audioManager != null && audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) {
+            Toast.makeText(context, context.getResources().getString(R.string.youShouldActivateSound), Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (intent != null && HEY_ACTION.equals(intent.getAction())) {
             final Intent serviceIntent = new Intent(context, MediaService.class);
             serviceIntent.setAction(HEY_SERVICE);
